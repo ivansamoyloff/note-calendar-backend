@@ -6,17 +6,7 @@ import { Prisma } from '@prisma/client';
 export class TasksService {
   constructor(private prisma: PrismaService) {}
 
-  async createTask(data: Prisma.TaskCreateInput) {
-    return this.prisma.task.create({
-      data,
-    });
-  }
-
-  async getAllTasks() {
-    return this.prisma.task.findMany();
-  }
-
-  async getTaskById(id: number) {
+  private async findTaskOrThrow(id: number) {
     const task = await this.prisma.task.findUnique({
       where: { id },
     });
@@ -28,14 +18,38 @@ export class TasksService {
     return task;
   }
 
-  async updateTask(id: number, updateData: Prisma.TaskUpdateInput) {
-    const task = await this.prisma.task.findUnique({
-      where: { id },
+  async createTask(data: Prisma.TaskCreateInput) {
+    return this.prisma.task.create({
+      data,
     });
+  }
 
-    if (!task) {
-      throw new Error('Task not found');
+  async getAllTasks() {
+    const tasks = await this.prisma.task.findMany();
+    if (!tasks.length) {
+      throw new Error('Tasks not found');
     }
+    return tasks;
+  }
+
+  async getTaskById(id: number) {
+    return await this.findTaskOrThrow(id);
+  }
+
+  async getTasksByUserId(userId: number) {
+    const tasks = await this.prisma.task.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+    if (!tasks.length) {
+      throw new Error('Tasks not found');
+    }
+    return tasks;
+  }
+
+  async updateTask(id: number, updateData: Prisma.TaskUpdateInput) {
+    await this.findTaskOrThrow(id);
 
     return this.prisma.task.update({
       where: { id },
@@ -44,13 +58,7 @@ export class TasksService {
   }
 
   async deleteTask(id: number) {
-    const task = await this.prisma.task.findUnique({
-      where: { id },
-    });
-
-    if (!task) {
-      throw new Error('Task not found');
-    }
+    await this.findTaskOrThrow(id);
 
     return this.prisma.task.delete({
       where: { id },

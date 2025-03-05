@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
   Put,
@@ -15,9 +16,27 @@ import { AuthGuard } from '@nestjs/passport';
 export class TasksController {
   constructor(private readonly taskService: TasksService) {}
 
+  @Get('')
+  @UseGuards(AuthGuard('jwt'))
+  async getAllTasks() {
+    return this.taskService.getAllTasks();
+  }
+
+  @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
+  async getTaskById(@Param('id') id: number) {
+    return this.taskService.getTaskById(id);
+  }
+
+  @Get('user/:userId')
+  @UseGuards(AuthGuard('jwt'))
+  async getTasksByUserId(@Param('id') id: number) {
+    return this.taskService.getTasksByUserId(id);
+  }
+
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  createTask(@Body() taskData: Prisma.TaskCreateInput) {
+  async createTask(@Body() taskData: Prisma.TaskCreateInput) {
     return this.taskService.createTask(taskData);
   }
 
