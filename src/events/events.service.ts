@@ -1,10 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class EventsService {
   constructor(private prisma: PrismaService) {}
+
+  private async findEventOrThrow(id: number) {
+    const event = await this.prisma.event.findUnique({
+      where: { id },
+    });
+
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    return event;
+  }
 
   async createEvent(data: Prisma.EventCreateInput) {
     return this.prisma.event.create({
@@ -13,26 +25,36 @@ export class EventsService {
   }
 
   async getAllEvents() {
-    return this.prisma.event.findMany();
+    const events = await this.prisma.event.findMany();
+
+    if (!events.length) {
+      throw new Error('Events not found');
+    }
+
+    return events;
   }
 
   async getEventById(id: number) {
-    const event = await this.prisma.event.findUnique({
-      where: { id },
+    return await this.findEventOrThrow(id);
+  }
+
+  async getEventsByUserId(userId: number) {
+    const events = await this.prisma.event.findMany({
+      where: {
+        userId: userId,
+      },
     });
-    if (!event) {
-      throw new Error('Event not found');
+
+    if (!events.length) {
+      throw new Error('Events not found');
     }
-    return event;
+
+    return events;
   }
 
   async updateEvent(id: number, updateData: Prisma.EventUpdateInput) {
-    const event = await this.prisma.event.findUnique({
-      where: { id },
-    });
-    if (!event) {
-      throw new Error('Event not found');
-    }
+    await this.findEventOrThrow(id);
+
     return this.prisma.event.update({
       where: { id },
       data: updateData,
@@ -40,12 +62,8 @@ export class EventsService {
   }
 
   async deleteEvent(id: number) {
-    const event = await this.prisma.event.findUnique({
-      where: { id },
-    });
-    if (!event) {
-      throw new Error('Event not found');
-    }
+    await this.findEventOrThrow(id);
+
     return this.prisma.event.delete({
       where: { id },
     });
