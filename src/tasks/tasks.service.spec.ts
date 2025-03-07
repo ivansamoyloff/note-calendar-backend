@@ -3,29 +3,29 @@ import { TasksService } from './tasks.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
+const taskMock: Prisma.TaskCreateInput = {
+  title: 'Test Task',
+  description: 'This is a test task',
+  status: 'onHold',
+  startDate: new Date(),
+  endDate: new Date(),
+  user: { connect: { id: 1 } },
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+const mockPrismaService = {
+  task: {
+    create: jest.fn(),
+    findMany: jest.fn(),
+    findUnique: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  },
+};
+
 describe('Tasks Service', () => {
   let service: TasksService;
-
-  const taskMock: Prisma.TaskCreateInput = {
-    title: 'Test Task',
-    description: 'This is a test task',
-    status: 'onHold',
-    startDate: new Date(),
-    endDate: new Date(),
-    user: { connect: { id: 1 } },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
-  const mockPrismaService = {
-    task: {
-      create: jest.fn(),
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-    },
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

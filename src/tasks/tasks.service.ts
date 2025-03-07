@@ -26,9 +26,11 @@ export class TasksService {
 
   async getAllTasks() {
     const tasks = await this.prisma.task.findMany();
+
     if (!tasks.length) {
       throw new Error('Tasks not found');
     }
+
     return tasks;
   }
 
@@ -42,9 +44,11 @@ export class TasksService {
         userId: userId,
       },
     });
+
     if (!tasks.length) {
       throw new Error('Tasks not found');
     }
+
     return tasks;
   }
 
