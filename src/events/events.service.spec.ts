@@ -46,11 +46,11 @@ describe('Events Service', () => {
     jest.clearAllMocks();
   });
 
-  it('Events service should be defined', () => {
+  it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('Events service should create a event record', async () => {
+  it('should create a event record', async () => {
     const eventData: Prisma.EventCreateInput = { ...eventMock };
     const createdEvent = { id: 1, ...eventMock };
 
@@ -65,7 +65,7 @@ describe('Events Service', () => {
   });
 
   describe('getAllEvents', () => {
-    it('Events service should return a full events list', async () => {
+    it('should return a full events list', async () => {
       const events = [
         { id: 1, ...eventMock },
         { id: 2, ...eventMock },
@@ -80,7 +80,7 @@ describe('Events Service', () => {
       expect(mockPrismaService.event.findMany).toHaveBeenCalled();
     });
 
-    it('Events service should throw an error if no events found', async () => {
+    it('should throw an error if no events found', async () => {
       mockPrismaService.event.findMany.mockResolvedValue([]);
 
       await expect(service.getAllEvents()).rejects.toThrow('Events not found');
@@ -88,7 +88,7 @@ describe('Events Service', () => {
   });
 
   describe('getEventById', () => {
-    it('Events service should return a event by ID', async () => {
+    it('should return a event by ID', async () => {
       const event = { id: 1, ...eventMock };
 
       mockPrismaService.event.findUnique.mockResolvedValue(event);
@@ -101,7 +101,7 @@ describe('Events Service', () => {
       });
     });
 
-    it("Events service should throw an error if event wasn't found", async () => {
+    it("should throw an error if event wasn't found", async () => {
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
       await expect(service.getEventById(999)).rejects.toThrow(
@@ -140,7 +140,7 @@ describe('Events Service', () => {
   });
 
   describe('updateEvent', () => {
-    it('Events service should update a event record', async () => {
+    it('should update a event record', async () => {
       const updateData = { title: 'Updated Event' };
       const updatedEvent = { id: 1, ...eventMock, title: 'Updated Event' };
 
@@ -161,7 +161,7 @@ describe('Events Service', () => {
       });
     });
 
-    it("Events service should throw an error if event to update wasn't found", async () => {
+    it("should throw an error if event to update wasn't found", async () => {
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
       await expect(
@@ -171,7 +171,7 @@ describe('Events Service', () => {
   });
 
   describe('deleteEvent', () => {
-    it('Events service should delete a event record', async () => {
+    it('should delete a event record', async () => {
       const deletedEvent = { id: 1, title: 'Event to delete' };
 
       mockPrismaService.event.findUnique.mockResolvedValue(deletedEvent);
@@ -190,7 +190,7 @@ describe('Events Service', () => {
       });
     });
 
-    it("Events service should throw an error if event to delete wasn't found", async () => {
+    it("should throw an error if event to delete wasn't found", async () => {
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
       await expect(service.deleteEvent(999)).rejects.toThrow('Event not found');

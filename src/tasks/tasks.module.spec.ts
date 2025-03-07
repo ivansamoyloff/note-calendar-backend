@@ -16,17 +16,17 @@ describe('Tasks Module', () => {
     jest.clearAllMocks();
   });
 
-  it('Tasks module should be should be defined', () => {
+  it('should be defined', () => {
     expect(module).toBeDefined();
   });
 
-  it('Tasks module should include Tasks Service', () => {
+  it('should include Tasks Service', () => {
     const service = module.get<TasksService>(TasksService);
 
     expect(service).toBeDefined();
   });
 
-  it('Tasks module should include Tasks Controller', () => {
+  it('should include Tasks Controller', () => {
     const controller = module.get<TasksController>(TasksController);
 
     expect(controller).toBeDefined();

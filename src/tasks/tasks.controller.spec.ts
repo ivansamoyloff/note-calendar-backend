@@ -42,7 +42,7 @@ describe('Tasks Controller', () => {
     tasksController = module.get<TasksController>(TasksController);
   });
 
-  it('Tasks controller should be defined', () => {
+  it('should be defined', () => {
     expect(tasksController).toBeDefined();
   });
 
@@ -109,7 +109,7 @@ describe('Tasks Controller', () => {
     });
   });
 
-  it('Tasks controller should create a task', async () => {
+  it('should create a task', async () => {
     const taskData: Prisma.TaskCreateInput = {
       title: 'Test Task',
       description: 'Task Description',
@@ -125,13 +125,13 @@ describe('Tasks Controller', () => {
     expect(result).toEqual({ id: 1, ...taskData });
   });
 
-  it('Tasks controller should update a task', async () => {
+  it('should update a task', async () => {
     const updateData: Prisma.TaskUpdateInput = { title: 'Updated Task' };
     const result = await tasksController.updateTask(1, updateData);
     expect(result).toEqual({ id: 1, ...updateData });
   });
 
-  it('Tasks controller should delete a task', async () => {
+  it('should delete a task', async () => {
     const result = await tasksController.deleteTask(1);
     expect(result).toEqual({ id: 1 });
   });

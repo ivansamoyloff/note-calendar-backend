@@ -45,11 +45,11 @@ describe('Tasks Service', () => {
     jest.clearAllMocks();
   });
 
-  it('Tasks service should be defined', () => {
+  it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('Tasks service should create a task record', async () => {
+  it('should create a task record', async () => {
     const taskData: Prisma.TaskCreateInput = { ...taskMock };
     const createdTask = { id: 1, ...taskMock };
 
@@ -64,7 +64,7 @@ describe('Tasks Service', () => {
   });
 
   describe('getAllTasks', () => {
-    it('Tasks service should return a full tasks list', async () => {
+    it('should return a full tasks list', async () => {
       const tasks = [
         { id: 1, ...taskMock },
         { id: 2, ...taskMock },
@@ -79,7 +79,7 @@ describe('Tasks Service', () => {
       expect(mockPrismaService.task.findMany).toHaveBeenCalled();
     });
 
-    it('Tasks service should throw an error if no tasks found', async () => {
+    it('should throw an error if no tasks found', async () => {
       mockPrismaService.task.findMany.mockResolvedValue([]);
 
       await expect(service.getAllTasks()).rejects.toThrow('Tasks not found');
@@ -87,7 +87,7 @@ describe('Tasks Service', () => {
   });
 
   describe('getTaskById', () => {
-    it('Tasks service should return a task by ID', async () => {
+    it('should return a task by ID', async () => {
       const task = { id: 1, ...taskMock };
 
       mockPrismaService.task.findUnique.mockResolvedValue(task);
@@ -100,7 +100,7 @@ describe('Tasks Service', () => {
       });
     });
 
-    it("Tasks service should throw an error if task wasn't found", async () => {
+    it("should throw an error if task wasn't found", async () => {
       mockPrismaService.task.findUnique.mockResolvedValue(null);
 
       await expect(service.getTaskById(999)).rejects.toThrow('Task not found');
@@ -137,7 +137,7 @@ describe('Tasks Service', () => {
   });
 
   describe('updateTask', () => {
-    it('Tasks service should update a task record', async () => {
+    it('should update a task record', async () => {
       const updateData = { title: 'Updated Task' };
       const updatedTask = { id: 1, ...taskMock, title: 'Updated Task' };
 
@@ -158,7 +158,7 @@ describe('Tasks Service', () => {
       });
     });
 
-    it("Tasks service should throw an error if task to update wasn't found", async () => {
+    it("should throw an error if task to update wasn't found", async () => {
       mockPrismaService.task.findUnique.mockResolvedValue(null);
 
       await expect(
@@ -168,7 +168,7 @@ describe('Tasks Service', () => {
   });
 
   describe('deleteTask', () => {
-    it('Tasks service should delete a task record', async () => {
+    it('should delete a task record', async () => {
       const deletedTask = { id: 1, title: 'Task to delete' };
 
       mockPrismaService.task.findUnique.mockResolvedValue(deletedTask);
@@ -187,7 +187,7 @@ describe('Tasks Service', () => {
       });
     });
 
-    it("Tasks service should throw an error if task to delete wasn't found", async () => {
+    it("should throw an error if task to delete wasn't found", async () => {
       mockPrismaService.task.findUnique.mockResolvedValue(null);
 
       await expect(service.deleteTask(999)).rejects.toThrow('Task not found');

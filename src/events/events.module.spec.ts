@@ -16,17 +16,17 @@ describe('Events Module', () => {
     jest.clearAllMocks();
   });
 
-  it('Events module should be should be defined', () => {
+  it('should be defined', () => {
     expect(module).toBeDefined();
   });
 
-  it('Events module should include Events Service', () => {
+  it('should include Events Service', () => {
     const service = module.get<EventsService>(EventsService);
 
     expect(service).toBeDefined();
   });
 
-  it('Events module should include Events Controller', () => {
+  it('should include Events Controller', () => {
     const controller = module.get<EventsController>(EventsController);
 
     expect(controller).toBeDefined();
