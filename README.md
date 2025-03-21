@@ -46,7 +46,7 @@ SECRET_KEY=your_jwt_secret_here
 
 ## 🔐 Authentication
 
-Almost all endpoints are protected with JWT, except:
+All endpoints are protected with JWT, except:
 - `POST /auth/login`
 - `POST /auth/register`
 
