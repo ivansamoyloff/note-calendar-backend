@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EventsController } from './events.controller';
-import { EventsService } from './events.service';
+import { EventsController } from '../../../src/events/events.controller';
+import { EventsService } from '../../../src/events/events.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Prisma } from '@prisma/client';
+import { Request } from 'express';
 
 const mockedDate: Date = new Date();
 
@@ -18,15 +19,21 @@ const mockEventsService = {
     createdAt: mockedDate,
     updatedAt: mockedDate,
   })),
-  updateEvent: jest.fn((id: number, updateData: Prisma.EventUpdateInput) => ({
-    ...updateData,
-    id,
-  })),
+  updateEvent: jest.fn(
+    (id: number, userId: number, updateData: Prisma.EventUpdateInput) => ({
+      ...updateData,
+      id,
+    }),
+  ),
   deleteEvent: jest.fn((id: number): { id: number } => ({ id })),
   getAllEvents: jest.fn(),
   getEventById: jest.fn(),
   getEventsByUserId: jest.fn(),
 };
+
+const mockRequest = {
+  user: { id: 42 },
+} as unknown as Request;
 
 describe('Events Controller', () => {
   let eventsController: EventsController;
@@ -74,7 +81,9 @@ describe('Events Controller', () => {
       const event = { id: 1, title: 'Test Event' };
       mockEventsService.getEventById.mockResolvedValue(event);
 
-      expect(await eventsController.getEventById(1)).toEqual(event);
+      expect(await eventsController.getEventById('1', mockRequest)).toEqual(
+        event,
+      );
     });
 
     it('should throw an error if event is not found', async () => {
@@ -82,9 +91,9 @@ describe('Events Controller', () => {
         new Error('Event not found'),
       );
 
-      await expect(eventsController.getEventById(999)).rejects.toThrow(
-        'Event not found',
-      );
+      await expect(
+        eventsController.getEventById('999', mockRequest),
+      ).rejects.toThrow('Event not found');
     });
   });
 
@@ -96,7 +105,7 @@ describe('Events Controller', () => {
       ];
       mockEventsService.getEventsByUserId.mockResolvedValue(result);
 
-      expect(await eventsController.getEventsByUserId(1)).toEqual(result);
+      expect(await eventsController.getEventsByUserId('1')).toEqual(result);
     });
 
     it('should throw an error if no events are found for the user', async () => {
@@ -104,7 +113,7 @@ describe('Events Controller', () => {
         new Error('Events not found'),
       );
 
-      await expect(eventsController.getEventsByUserId(1)).rejects.toThrow(
+      await expect(eventsController.getEventsByUserId('1')).rejects.toThrow(
         'Events not found',
       );
     });
@@ -129,12 +138,17 @@ describe('Events Controller', () => {
 
   it('Events controller should update a event', async () => {
     const updateData: Prisma.EventUpdateInput = { title: 'Updated Event' };
-    const result = await eventsController.updateEvent(1, updateData);
-    expect(result).toEqual({ id: 1, ...updateData });
+    const result = await eventsController.updateEvent(
+      '1',
+      updateData,
+      mockRequest,
+    );
+    console.log(result);
+    expect(result).toEqual({ id: 1, title: 'Updated Event' });
   });
 
   it('Events controller should delete a event', async () => {
-    const result = await eventsController.deleteEvent(1);
+    const result = await eventsController.deleteEvent('1', mockRequest);
     expect(result).toEqual({ id: 1 });
   });
 });

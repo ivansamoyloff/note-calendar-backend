@@ -1,4 +1,4 @@
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from '../../../src/auth/jwt.strategy';
 import { Strategy } from 'passport-jwt';
 import IJwtPayload from 'interfaces/jwt-payload.interface';
 

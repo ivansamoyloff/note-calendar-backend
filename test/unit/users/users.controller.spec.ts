@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
+import { UsersController } from '../../../src/users/users.controller';
+import { UsersService } from '../../../src/users/users.service';
 import { Prisma } from '@prisma/client';
-import { NotFoundException } from '@nestjs/common';
 
 const mockUser = {
   id: 1,

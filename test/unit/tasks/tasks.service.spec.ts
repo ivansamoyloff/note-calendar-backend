@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TasksService } from './tasks.service';
-import { PrismaService } from '../prisma/prisma.service';
+import { TasksService } from '../../../src/tasks/tasks.service';
+import { PrismaService } from '../../../src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
 const taskMock: Prisma.TaskCreateInput = {
@@ -92,18 +92,20 @@ describe('Tasks Service', () => {
 
       mockPrismaService.task.findUnique.mockResolvedValue(task);
 
-      const result = await service.getTaskById(1);
+      const result = await service.getTaskById(1, 1);
 
       expect(result).toEqual(task);
       expect(mockPrismaService.task.findUnique).toHaveBeenCalledWith({
-        where: { id: 1 },
+        where: { id: 1, userId: 1 },
       });
     });
 
     it("should throw an error if task wasn't found", async () => {
       mockPrismaService.task.findUnique.mockResolvedValue(null);
 
-      await expect(service.getTaskById(999)).rejects.toThrow('Task not found');
+      await expect(service.getTaskById(999, 1)).rejects.toThrow(
+        'Task not found',
+      );
     });
   });
 
@@ -144,12 +146,12 @@ describe('Tasks Service', () => {
       mockPrismaService.task.findUnique.mockResolvedValue(updatedTask);
       mockPrismaService.task.update.mockResolvedValue(updatedTask);
 
-      const result = await service.updateTask(1, updateData);
+      const result = await service.updateTask(1, 1, updateData);
 
       expect(result).toEqual(updatedTask);
 
       expect(mockPrismaService.task.findUnique).toHaveBeenCalledWith({
-        where: { id: 1 },
+        where: { id: 1, userId: 1 },
       });
 
       expect(mockPrismaService.task.update).toHaveBeenCalledWith({
@@ -162,7 +164,7 @@ describe('Tasks Service', () => {
       mockPrismaService.task.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.updateTask(999, { title: 'Updated' }),
+        service.updateTask(999, 1, { title: 'Updated' }),
       ).rejects.toThrow('Task not found');
     });
   });
@@ -174,12 +176,12 @@ describe('Tasks Service', () => {
       mockPrismaService.task.findUnique.mockResolvedValue(deletedTask);
       mockPrismaService.task.delete.mockResolvedValue(deletedTask);
 
-      const result = await service.deleteTask(1);
+      const result = await service.deleteTask(1, 1);
 
       expect(result).toEqual(deletedTask);
 
       expect(mockPrismaService.task.findUnique).toHaveBeenCalledWith({
-        where: { id: 1 },
+        where: { id: 1, userId: 1 },
       });
 
       expect(mockPrismaService.task.delete).toHaveBeenCalledWith({
@@ -190,7 +192,9 @@ describe('Tasks Service', () => {
     it("should throw an error if task to delete wasn't found", async () => {
       mockPrismaService.task.findUnique.mockResolvedValue(null);
 
-      await expect(service.deleteTask(999)).rejects.toThrow('Task not found');
+      await expect(service.deleteTask(999, 1)).rejects.toThrow(
+        'Task not found',
+      );
     });
   });
 });

@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from './app.module';
-import { AuthModule } from './auth/auth.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { UsersModule } from './users/users.module';
-import { TasksModule } from './tasks/tasks.module';
-import { EventsModule } from './events/events.module';
-import { AppController } from './app.controller';
-import { JwtStrategy } from './auth/jwt.strategy';
+import { AppModule } from '../../../src/app.module';
+import { AuthModule } from '../../../src/auth/auth.module';
+import { PrismaModule } from '../../../src/prisma/prisma.module';
+import { UsersModule } from '../../../src/users/users.module';
+import { TasksModule } from '../../../src/tasks/tasks.module';
+import { EventsModule } from '../../../src/events/events.module';
+import { AppController } from '../../../src/app.controller';
+import { JwtStrategy } from '../../../src/auth/jwt.strategy';
 
 describe('AppModule', () => {
   let moduleRef: TestingModule;

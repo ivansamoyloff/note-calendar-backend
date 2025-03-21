@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Prisma } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -13,11 +14,13 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(AuthGuard('jwt'))
   async getAllUsers() {
     return this.usersService.getAllUsers();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
   async getUserById(@Param('id') id: string) {
     const user = await this.usersService.getUserById(Number(id));
     if (!user) {
@@ -27,6 +30,7 @@ export class UsersController {
   }
 
   @Get('email/:email')
+  @UseGuards(AuthGuard('jwt'))
   async getUserByEmail(@Param('email') email: string) {
     const user = await this.usersService.getUserByEmail(email);
     if (!user) {

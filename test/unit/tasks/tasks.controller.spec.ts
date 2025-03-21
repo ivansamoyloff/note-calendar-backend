@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TasksController } from './tasks.controller';
-import { TasksService } from './tasks.service';
+import { TasksController } from '../../../src/tasks/tasks.controller';
+import { TasksService } from '../../../src/tasks/tasks.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Prisma } from '@prisma/client';
+import { Request } from 'express';
 
 const mockedDate: Date = new Date();
 
@@ -17,15 +18,21 @@ const mockTasksService = {
     createdAt: mockedDate,
     updatedAt: mockedDate,
   })),
-  updateTask: jest.fn((id: number, updateData: Prisma.TaskUpdateInput) => ({
-    ...updateData,
-    id,
-  })),
+  updateTask: jest.fn(
+    (id: number, userId: number, updateData: Prisma.TaskUpdateInput) => ({
+      ...updateData,
+      id,
+    }),
+  ),
   deleteTask: jest.fn((id: number): { id: number } => ({ id })),
   getAllTasks: jest.fn(),
   getTaskById: jest.fn(),
   getTasksByUserId: jest.fn(),
 };
+
+const mockRequest = {
+  user: { id: 42 },
+} as unknown as Request;
 
 describe('Tasks Controller', () => {
   let tasksController: TasksController;
@@ -73,7 +80,7 @@ describe('Tasks Controller', () => {
       const task = { id: 1, title: 'Test Task' };
       mockTasksService.getTaskById.mockResolvedValue(task);
 
-      expect(await tasksController.getTaskById(1)).toEqual(task);
+      expect(await tasksController.getTaskById('1', mockRequest)).toEqual(task);
     });
 
     it('should throw an error if task is not found', async () => {
@@ -81,9 +88,9 @@ describe('Tasks Controller', () => {
         new Error('Task not found'),
       );
 
-      await expect(tasksController.getTaskById(999)).rejects.toThrow(
-        'Task not found',
-      );
+      await expect(
+        tasksController.getTaskById('999', mockRequest),
+      ).rejects.toThrow('Task not found');
     });
   });
 
@@ -95,7 +102,7 @@ describe('Tasks Controller', () => {
       ];
       mockTasksService.getTasksByUserId.mockResolvedValue(result);
 
-      expect(await tasksController.getTasksByUserId(1)).toEqual(result);
+      expect(await tasksController.getTasksByUserId('1')).toEqual(result);
     });
 
     it('should throw an error if no tasks are found for the user', async () => {
@@ -103,7 +110,7 @@ describe('Tasks Controller', () => {
         new Error('Tasks not found'),
       );
 
-      await expect(tasksController.getTasksByUserId(1)).rejects.toThrow(
+      await expect(tasksController.getTasksByUserId('1')).rejects.toThrow(
         'Tasks not found',
       );
     });
@@ -127,12 +134,16 @@ describe('Tasks Controller', () => {
 
   it('should update a task', async () => {
     const updateData: Prisma.TaskUpdateInput = { title: 'Updated Task' };
-    const result = await tasksController.updateTask(1, updateData);
+    const result = await tasksController.updateTask(
+      '1',
+      updateData,
+      mockRequest,
+    );
     expect(result).toEqual({ id: 1, ...updateData });
   });
 
   it('should delete a task', async () => {
-    const result = await tasksController.deleteTask(1);
+    const result = await tasksController.deleteTask('1', mockRequest);
     expect(result).toEqual({ id: 1 });
   });
 });

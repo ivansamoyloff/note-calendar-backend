@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaModule } from './prisma.module';
+import { PrismaModule } from '../../../src/prisma/prisma.module';
 
 describe('Prisma Module', () => {
   let module: TestingModule;
@@ -14,7 +14,7 @@ describe('Prisma Module', () => {
     jest.clearAllMocks();
   });
 
-  it('Prisma module should be should be defined', () => {
+  it('should be defined', () => {
     expect(module).toBeDefined();
   });
 });

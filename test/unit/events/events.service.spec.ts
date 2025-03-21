@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EventsService } from './events.service';
-import { PrismaService } from '../prisma/prisma.service';
+import { EventsService } from '../../../src/events/events.service';
+import { PrismaService } from '../../../src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
 const eventMock: Prisma.EventCreateInput = {
@@ -93,18 +93,18 @@ describe('Events Service', () => {
 
       mockPrismaService.event.findUnique.mockResolvedValue(event);
 
-      const result = await service.getEventById(1);
+      const result = await service.getEventById(1, 1);
 
       expect(result).toEqual(event);
       expect(mockPrismaService.event.findUnique).toHaveBeenCalledWith({
-        where: { id: 1 },
+        where: { id: 1, userId: 1 },
       });
     });
 
     it("should throw an error if event wasn't found", async () => {
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
-      await expect(service.getEventById(999)).rejects.toThrow(
+      await expect(service.getEventById(999, 1)).rejects.toThrow(
         'Event not found',
       );
     });
@@ -147,12 +147,12 @@ describe('Events Service', () => {
       mockPrismaService.event.findUnique.mockResolvedValue(updatedEvent);
       mockPrismaService.event.update.mockResolvedValue(updatedEvent);
 
-      const result = await service.updateEvent(1, updateData);
+      const result = await service.updateEvent(1, 1, updateData);
 
       expect(result).toEqual(updatedEvent);
 
       expect(mockPrismaService.event.findUnique).toHaveBeenCalledWith({
-        where: { id: 1 },
+        where: { id: 1, userId: 1 },
       });
 
       expect(mockPrismaService.event.update).toHaveBeenCalledWith({
@@ -165,7 +165,7 @@ describe('Events Service', () => {
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.updateEvent(999, { title: 'Updated' }),
+        service.updateEvent(999, 1, { title: 'Updated' }),
       ).rejects.toThrow('Event not found');
     });
   });
@@ -177,12 +177,12 @@ describe('Events Service', () => {
       mockPrismaService.event.findUnique.mockResolvedValue(deletedEvent);
       mockPrismaService.event.delete.mockResolvedValue(deletedEvent);
 
-      const result = await service.deleteEvent(1);
+      const result = await service.deleteEvent(1, 1);
 
       expect(result).toEqual(deletedEvent);
 
       expect(mockPrismaService.event.findUnique).toHaveBeenCalledWith({
-        where: { id: 1 },
+        where: { id: 1, userId: 1 },
       });
 
       expect(mockPrismaService.event.delete).toHaveBeenCalledWith({
@@ -193,7 +193,9 @@ describe('Events Service', () => {
     it("should throw an error if event to delete wasn't found", async () => {
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
-      await expect(service.deleteEvent(999)).rejects.toThrow('Event not found');
+      await expect(service.deleteEvent(999, 1)).rejects.toThrow(
+        'Event not found',
+      );
     });
   });
 });

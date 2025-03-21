@@ -1,6 +1,6 @@
-import { bootstrap } from './main';
+import { bootstrap } from '../../../src/main';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from '../../../src/app.module';
 
 jest.mock('@nestjs/core', () => ({
   NestFactory: {

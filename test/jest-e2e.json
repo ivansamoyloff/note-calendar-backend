@@ -1,6 +1,9 @@
 {
+  "globalSetup": "./setup.ts",
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": ".",
+  "coverageDirectory": "./coverage-e2e",
+  "collectCoverage": true,
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {

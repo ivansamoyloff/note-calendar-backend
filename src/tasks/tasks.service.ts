@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
@@ -6,13 +6,13 @@ import { Prisma } from '@prisma/client';
 export class TasksService {
   constructor(private prisma: PrismaService) {}
 
-  private async findTaskOrThrow(id: number) {
+  private async findTaskOrThrow(id: number, userId: number) {
     const task = await this.prisma.task.findUnique({
-      where: { id },
+      where: { id, userId },
     });
 
     if (!task) {
-      throw new Error('Task not found');
+      throw new NotFoundException('Task not found or not accessible');
     }
 
     return task;
@@ -28,14 +28,14 @@ export class TasksService {
     const tasks = await this.prisma.task.findMany();
 
     if (!tasks.length) {
-      throw new Error('Tasks not found');
+      throw new NotFoundException('Tasks not found or not accessible');
     }
 
     return tasks;
   }
 
-  async getTaskById(id: number) {
-    return await this.findTaskOrThrow(id);
+  async getTaskById(id: number, userId: number) {
+    return await this.findTaskOrThrow(id, userId);
   }
 
   async getTasksByUserId(userId: number) {
@@ -46,14 +46,18 @@ export class TasksService {
     });
 
     if (!tasks.length) {
-      throw new Error('Tasks not found');
+      throw new NotFoundException('Tasks not found or not accessible');
     }
 
     return tasks;
   }
 
-  async updateTask(id: number, updateData: Prisma.TaskUpdateInput) {
-    await this.findTaskOrThrow(id);
+  async updateTask(
+    id: number,
+    userId: number,
+    updateData: Prisma.TaskUpdateInput,
+  ) {
+    await this.findTaskOrThrow(id, userId);
 
     return this.prisma.task.update({
       where: { id },
@@ -61,8 +65,8 @@ export class TasksService {
     });
   }
 
-  async deleteTask(id: number) {
-    await this.findTaskOrThrow(id);
+  async deleteTask(id: number, userId: number) {
+    await this.findTaskOrThrow(id, userId);
 
     return this.prisma.task.delete({
       where: { id },

@@ -17,6 +17,7 @@ lerna-debug.log*
 
 # Tests
 /coverage
+/test/coverage-e2e
 /.nyc_output
 
 # IDEs and editors
@@ -34,9 +35,11 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+/.vscode
 
 # dotenv environment variable files
 .env
+.env.test
 .env.development.local
 .env.test.local
 .env.production.local
