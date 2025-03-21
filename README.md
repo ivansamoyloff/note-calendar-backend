@@ -6,7 +6,7 @@
 
 # 📘 Note Calendar Backend
 
-Note Calendar Backend is the backend part of a calendar application with support for tasks and events. It features JWT-based authentication, full unit and e2e test coverage, and secure database access via Prisma.
+Note Calendar Backend is the backend part of a Note calendar application with support for tasks and events. It features JWT-based authentication, full unit and e2e test coverage, and secure database access via Prisma.
 
 ---
 
