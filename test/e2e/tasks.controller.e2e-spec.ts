@@ -3,16 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../../src/app.module';
 import { PrismaService } from '../../src/prisma/prisma.service';
+import ITask from '../../interfaces/task.interface';
 import * as bcrypt from 'bcryptjs';
-
-//TODO: finish the interface
-interface TaskResponse {
-  id: number;
-  title: string;
-  userId: number;
-  startDate: string;
-  endDate: string;
-}
 
 describe('TasksController (e2e)', () => {
   jest.setTimeout(20000);
@@ -75,7 +67,7 @@ describe('TasksController (e2e)', () => {
       });
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('id');
-    expect((response.body as TaskResponse).title).toEqual('New Task');
+    expect((response.body as ITask).title).toEqual('New Task');
   });
 
   it('/tasks (GET) - should return all tasks', async () => {
@@ -92,7 +84,7 @@ describe('TasksController (e2e)', () => {
       .set('Authorization', `Bearer ${access_token}`);
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('id', testTaskId);
-    expect((response.body as TaskResponse).title).toEqual('Initial Task');
+    expect((response.body as ITask).title).toEqual('Initial Task');
   });
 
   it('/tasks/user/:userId (GET) - should return tasks by user ID', async () => {
@@ -101,7 +93,7 @@ describe('TasksController (e2e)', () => {
       .set('Authorization', `Bearer ${access_token}`);
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
-    (response.body as TaskResponse[]).forEach((task) => {
+    (response.body as ITask[]).forEach((task) => {
       expect(task.userId).toEqual(testUserId);
     });
   });

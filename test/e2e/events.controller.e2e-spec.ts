@@ -3,16 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../../src/app.module';
 import { PrismaService } from '../../src/prisma/prisma.service';
+import IEvent from 'interfaces/event.interface';
 import * as bcrypt from 'bcryptjs';
-
-//TODO: finish the interface
-interface EventResponse {
-  id: number;
-  title: string;
-  userId: number;
-  startDate: string;
-  endDate: string;
-}
 
 describe('EventsController (e2e)', () => {
   jest.setTimeout(20000);
@@ -76,7 +68,7 @@ describe('EventsController (e2e)', () => {
       });
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('id');
-    expect((response.body as EventResponse).title).toEqual('New Event');
+    expect((response.body as IEvent).title).toEqual('New Event');
   });
 
   it('/events (GET) - should return all events', async () => {
@@ -102,7 +94,7 @@ describe('EventsController (e2e)', () => {
       .set('Authorization', `Bearer ${access_token}`);
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
-    (response.body as EventResponse[]).forEach((event) => {
+    (response.body as IEvent[]).forEach((event) => {
       expect(event.userId).toEqual(testUserId);
     });
   });
